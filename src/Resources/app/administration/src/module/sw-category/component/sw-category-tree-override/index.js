@@ -13,7 +13,7 @@ Component.override('sw-category-tree', {
             const that = this;
             await httpClient.post('/_admin/imidi-category-duplicator/clone-category/' + contextItem.id, {}, { headers }).then((clone) => {
                 const criteria = new Criteria();
-                criteria.setIds([clone.id]);
+                criteria.setIds([clone.data]);
                 that.categoryRepository.search(criteria).then((categories) => {
                     this.addCategories(categories);
                 });
