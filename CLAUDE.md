@@ -2,18 +2,77 @@
 
 ## Project Overview
 
-A Shopware 6 plugin that allows duplicating full category subtrees via right-click context menu in the admin panel.
+A Shopware 6 plugin that enables duplication of full category subtrees via right-click context menu in the admin panel. When duplicating, the plugin creates a complete copy of the category and all its children with their hierarchical structure preserved.
+
+**Plugin Name:** iMidiCategoryDuplicator
+**Namespace:** `iMidiCategoryDuplicator`
+**License:** AGPL-3.0-or-later
+**Author:** iMi digital GmbH
 
 ## Tech Stack
 
-- PHP (Shopware 6 plugin)
-- Shopware 6.6.x (use 2.x branch for Shopware 6.4)
-- PSR-4 autoloading under `iMidiCategoryDuplicator` namespace
+| Layer | Technology |
+|-------|-----------|
+| Backend | PHP 8.0+ |
+| Framework | Shopware 6.6, Symfony 6.x |
+| API | RESTful (Attribute-based Routing) |
+| Admin UI | Vue.js Component Override |
+| Templating | Twig |
+| Build | Webpack (compiled JS bundle) |
+
+## Version Compatibility
+
+| Plugin Version | Shopware Version |
+|----------------|------------------|
+| 2.x | 6.4.x |
+| 3.x | 6.6.x |
 
 ## Project Structure
 
-- `src/` - Plugin source code
-- `composer.json` - Plugin dependencies and metadata
+```
+src/
+├── iMidiCategoryDuplicator.php              # Plugin bootstrap class
+├── Core/Framework/Api/Controller/
+│   └── CloneCategoryController.php          # API controller (94 lines)
+└── Resources/
+    ├── config/
+    │   ├── routes.xml                       # API route definitions
+    │   ├── services.xml                     # Dependency injection
+    │   └── config.xml                       # Plugin settings UI
+    ├── app/administration/src/
+    │   ├── main.js                          # Admin module entry
+    │   └── module/sw-category/.../
+    │       └── sw-category-tree-override/   # Vue.js override
+    └── public/administration/js/
+        └── i-midi-category-duplicator.js    # Compiled bundle
+```
+
+## Key Components
+
+### CloneCategoryController.php
+
+Main API controller handling category duplication:
+
+- **Route:** `POST /api/_admin/imidi-category-duplicator/clone-category/{categoryId}`
+- **Methods:**
+  - `cloneCategory()` - Entry point, creates clone with " - Copy" suffix
+  - `cloneChildren()` - Recursive method for child categories
+  - `getCloneBehavior()` - Configures clone based on settings
+
+### Admin Override
+
+The `sw-category-tree` Vue component is overridden to:
+- Enable `allow-duplicate="true"` on tree items
+- Add `duplicateElement()` method for API calls
+
+## Configuration Options
+
+Two settings available in Admin → Extensions → iMidiCategoryDuplicator:
+
+| Setting | Key | Description |
+|---------|-----|-------------|
+| Clone Product Categories | `cloneProductCategories` | Also assign products to cloned category |
+| Clone Custom Fields | `cloneCustomFields` | Copy custom field values |
 
 ## Development
 
@@ -25,11 +84,35 @@ bin/console plugin:refresh
 bin/console plugin:install -a iMidiCategoryDuplicator
 ```
 
-### Testing
+### Building Admin JS
 
-After making changes, rebuild SEO URL indices at `/admin#/sw/settings/cache/index`.
+```bash
+cd src/Resources/app/administration
+npm install
+npm run build
+```
 
-## Notes
+### Testing Changes
 
-- SEO URLs are not automatically generated for copied categories
-- Check GitHub issues for known problems
+After modifications, rebuild SEO URL indices at `/admin#/sw/settings/cache/index`.
+
+## Known Issues (FIXME in Code)
+
+1. **Positioning** (`CloneCategoryController.php:76`): Cloned category may not appear at expected position
+2. **Translation** (`CloneCategoryController.php:80`): " - Copy" suffix is hardcoded, not translatable
+3. **SEO URLs**: Not generated for copied categories (manual rebuild required)
+
+## Local Documentation
+
+Detailed documentation is available in `.claude/docs/`:
+- `architecture.md` - Plugin architecture and flow diagrams
+- `api.md` - API endpoint documentation
+- `configuration.md` - Configuration options
+- `known-issues.md` - Known problems and workarounds
+
+## Dependencies
+
+Injected services in CloneCategoryController:
+- `category.repository` - Shopware Category EntityRepository
+- `translator` - TranslatorInterface
+- `SystemConfigService` - Plugin configuration access
