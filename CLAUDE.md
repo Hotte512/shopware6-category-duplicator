@@ -14,18 +14,20 @@ A Shopware 6 plugin that enables duplication of full category subtrees via right
 | Layer | Technology |
 |-------|-----------|
 | Backend | PHP 8.0+ |
-| Framework | Shopware 6.6, Symfony 6.x |
+| Framework | Shopware 6.6-6.7, Symfony 6.x/7.x |
 | API | RESTful (Attribute-based Routing) |
-| Admin UI | Vue.js Component Override |
+| Admin UI | Vue.js 3 Component Override |
 | Templating | Twig |
-| Build | Webpack (compiled JS bundle) |
+| Build | Webpack (6.6) / Vite (6.7) |
 
 ## Version Compatibility
 
 | Plugin Version | Shopware Version |
 |----------------|------------------|
 | 2.x | 6.4.x |
-| 3.x | 6.6.x |
+| 3.x | 6.6.x - 6.7.x |
+
+> **Note:** Das Plugin verwendet `Component.override()`, das in Shopware 6.8 deprecated wird. Migration zur Composition API wird dann erforderlich.
 
 ## Project Structure
 

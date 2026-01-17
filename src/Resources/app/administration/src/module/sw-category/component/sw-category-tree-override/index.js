@@ -10,19 +10,25 @@ Component.override('sw-category-tree', {
             const initContainer = Shopware.Application.getContainer('init');
             const headers = this.categoryRepository.buildHeaders();
             const httpClient = initContainer.httpClient;
-            const that = this;
-            await httpClient.post('/_admin/imidi-category-duplicator/clone-category/' + contextItem.id, {}, { headers }).then((clone) => {
+
+            try {
+                const response = await httpClient.post(
+                    '/_admin/imidi-category-duplicator/clone-category/' + contextItem.id,
+                    {},
+                    { headers },
+                );
+
                 const criteria = new Criteria();
-                criteria.setIds([clone.data]);
-                that.categoryRepository.search(criteria).then((categories) => {
-                    this.addCategories(categories);
-                });
-            }).catch((e) => {
-                console.error(e);
+                criteria.setIds([response.data]);
+
+                const categories = await this.categoryRepository.search(criteria);
+                this.addCategories(categories);
+            } catch (error) {
+                console.error(error);
                 this.createNotificationError({
-                    message: this.$tc('global.notification.unspecifiedSaveErrorMessage'),
+                    message: this.$t('global.notification.unspecifiedSaveErrorMessage'),
                 });
-            });
+            }
         },
-    }
+    },
 });
