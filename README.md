@@ -1,3 +1,7 @@
+This Version is updated with use of AI (Claude) and should work with SW6.6.10.X and SW6.7.?
+As I do not have an running Shopware 6.7 it's not testet, I will if i migrate from 6.6.10.X.
+Please add Console log if u find an error. - HOTTE
+
 # Shopware 6 Category Duplicator
 
 Shopware 6 extension to duplicate full category subtrees including all child categories.
@@ -44,7 +48,7 @@ Navigate to **Settings > Extensions > iMidiCategoryDuplicator** to configure:
 
 For known issues, check the [issues page](https://github.com/iMi-digital/shopware6-category-duplicator/issues).
 
-## About Us
+## About Us - Forked from
 
 iMi digital GmbH offers Shopware related open source modules. If you are confronted with any bugs, you may want to open an issue here.
 
